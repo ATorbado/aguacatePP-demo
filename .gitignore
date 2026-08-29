@@ -1,0 +1,47 @@
+# Flutter y herramientas
+**/.dart_tool/
+**/build/
+**/.gradle/
+**/.idea/
+**/.vscode/
+**/.cxx/
+**/ephemeral/
+**/Pods/
+**/DerivedData/
+**/*.iml
+**/.flutter-plugins
+**/.flutter-plugins-dependencies
+**/Generated.xcconfig
+**/flutter_export_environment.sh
+
+# Configuración privada y credenciales
+**/.env
+**/.env.*
+**/env.json
+**/android/local.properties
+**/android/key.properties
+**/google-services.json
+**/GoogleService-Info.plist
+**/firebase_options.dart
+**/credentials.json
+**/service-account*.json
+**/*.jks
+**/*.keystore
+**/*.p12
+**/*.pfx
+**/*.pem
+**/*.key
+
+# Datos, copias y artefactos no versionables
+**/*.7z
+**/*.zip
+**/*.rar
+**/*.apk
+**/*.aab
+**/*.log
+**/*.db
+**/*.sqlite
+**/*.sqlite3
+**/backups/
+**/*.backup
+**/*.bak

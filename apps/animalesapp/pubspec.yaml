@@ -1,0 +1,49 @@
+name: animalesapp
+description: "A new Flutter project."
+publish_to: 'none'
+
+version: 1.0.0+2
+
+environment:
+  sdk: ^3.7.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  path_provider: ^2.0.15
+  csv: ^6.0.0
+  connectivity_plus: ^6.1.4
+  cupertino_icons: ^1.0.8
+  geolocator: ^14.0.2
+  image_picker: ^1.0.4
+  mailer: ^6.0.1
+  url_launcher: ^6.1.7
+  share_plus: ^11.0.0
+  flutter_image_compress: ^2.3.0
+  gal: ^2.3.0
+  permission_handler: ^11.3.1
+
+  http: ^1.4.0
+  shared_preferences: ^2.2.3
+  cryptography: ^2.7.0
+  package_info_plus: ^8.0.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^6.0.0
+  flutter_launcher_icons: ^0.14.4
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "assets/walpaper2.jpg"
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/walpaper.jpg
+    - assets/walpaper2.jpg
