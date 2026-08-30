@@ -498,7 +498,6 @@ class _TramoEditCard extends StatefulWidget {
   final Tramo tramo;
 
   const _TramoEditCard({
-    super.key,
     required this.tramo,
   });
 

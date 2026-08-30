@@ -224,7 +224,7 @@ class _VehicleDetailPageState extends State<VehicleDetailPage> {
                         width: double.infinity,
                         padding: const EdgeInsets.all(18),
                         decoration: BoxDecoration(
-                          color: Colors.black.withOpacity(0.05),
+                          color: Colors.black.withValues(alpha: 0.05),
                           borderRadius: BorderRadius.circular(18),
                         ),
                         child: Column(
@@ -275,7 +275,7 @@ class _VehicleDetailPageState extends State<VehicleDetailPage> {
                               marcaModelo: marcaController.text,
                             );
 
-                            if (!mounted) return;
+                            if (!context.mounted) return;
 
                             Navigator.pop(context);
 
@@ -289,6 +289,7 @@ class _VehicleDetailPageState extends State<VehicleDetailPage> {
                               ),
                             );
                           } catch (e) {
+                            if (!context.mounted) return;
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 content: Text('$e'),

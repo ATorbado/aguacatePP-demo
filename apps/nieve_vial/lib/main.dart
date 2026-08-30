@@ -8,21 +8,16 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:cryptography/cryptography.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'meter.dart';
 import 'revisar.dart';
 import 'enviar_pdf.dart';
 
-late DateFormat _fmt;
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeDateFormatting('es_ES');
   Intl.defaultLocale = 'es_ES';
-  _fmt = DateFormat('dd-MMMM-yyyy', 'es_ES');
-
   final gate = await _PolicyGate.evaluate();
   await _NotificationService.instance.init();
   runApp(App3Nieve(gate: gate));

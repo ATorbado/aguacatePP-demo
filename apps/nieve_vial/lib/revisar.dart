@@ -570,7 +570,6 @@ DateTime? _parseHoraToDate(String? s) {
   final total = h * 60 + m;
 
   const nightStart = 20 * 60 + 30; // 20:30
-  const morningEnd = 8 * 60 + 30; // 08:30
 
   final baseDay = DateTime(2000, 1, 2);
   final previousDay = baseDay.subtract(const Duration(days: 1));
@@ -1177,7 +1176,7 @@ class _RevisarDetailPageState extends State<RevisarDetailPage> {
 class _TramoEditCard extends StatefulWidget {
   final Tramo tramo;
 
-  const _TramoEditCard({super.key, required this.tramo});
+  const _TramoEditCard({required this.tramo});
 
   @override
   State<_TramoEditCard> createState() => _TramoEditCardState();

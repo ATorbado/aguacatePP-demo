@@ -794,7 +794,11 @@ class _DatosPreviosPageState extends State<DatosPreviosPage> {
                 controller: _ctrlHorasInicio,
                 keyboardType: TextInputType.number,
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                decoration: const InputDecoration(labelText: 'Hora inicio contador (opcional)'),
+                decoration: InputDecoration(
+                  labelText: horaMin > 0
+                      ? 'Hora inicio contador (opcional; min >= $horaMin)'
+                      : 'Hora inicio contador (opcional)',
+                ),
                 onChanged: (v) {
                   _datos.horasInicio = v.isEmpty ? null : v;
                 },
@@ -802,6 +806,7 @@ class _DatosPreviosPageState extends State<DatosPreviosPage> {
                   if (v == null || v.isEmpty) return null;
                   final n = int.tryParse(v);
                   if (n == null) return 'Número inválido';
+                  if (n < horaMin) return 'Debe ser >= $horaMin';
                   return null;
                 },
               ),
@@ -1841,12 +1846,18 @@ class _TramoCardState extends State<_TramoCard> {
       final km = int.tryParse(raw);
       final m = int.tryParse(mCtrl.text);
       if (km != null) {
-        if (isInicio) t.pkIni = km;
-        else t.pkFin = km;
+        if (isInicio) {
+          t.pkIni = km;
+        } else {
+          t.pkFin = km;
+        }
       }
       if (m != null) {
-        if (isInicio) t.mIni = m;
-        else t.mFin = m;
+        if (isInicio) {
+          t.mIni = m;
+        } else {
+          t.mFin = m;
+        }
       }
 
       // aplica snap igualmente

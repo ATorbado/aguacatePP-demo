@@ -159,7 +159,7 @@ class _VehiclesPageState extends State<VehiclesPage> {
                                 decoration: BoxDecoration(
                                   color: const Color(
                                     0xFFFF7700,
-                                  ).withOpacity(0.15),
+                                  ).withValues(alpha: 0.15),
                                   borderRadius: BorderRadius.circular(18),
                                 ),
                                 child: Icon(

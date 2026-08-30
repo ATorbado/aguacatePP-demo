@@ -22,7 +22,6 @@ const bool payloadConfirmado = false;
 const String payloadStatus = 'pending';
 
 const Duration httpTimeout = Duration(seconds: 25);
-const Duration healthTimeout = Duration(seconds: 8);
 
 const int maxOperarios = 3;
 
@@ -654,27 +653,6 @@ String _maskToken(String? t) {
   return '${t.substring(0, 3)}***${t.substring(t.length - 3)}';
 }
 
-// ========================= HTTP EXPORT (JSON) =========================
-
-Future<void> _pingHealth(
-  http.Client client,
-  Map<String, String> headers,
-) async {
-  final uri = Uri.parse('$apiBase/api/nieve/health');
-  debugPrint('PING -> GET $uri headers=${headers.keys.toList()}');
-  try {
-    final r = await client.get(uri, headers: headers).timeout(healthTimeout);
-    debugPrint('PING <- ${r.statusCode} body=${r.body}');
-    if (r.statusCode < 200 || r.statusCode >= 300) {
-      throw Exception('Health NOK ${r.statusCode}: ${r.body}');
-    }
-  } catch (e, st) {
-    debugPrint('PING !! ERROR: $e');
-    debugPrint('$st');
-    rethrow;
-  }
-}
-
 Future<void> sendParteToServer(Parte parte) async {
   if (demoMode) {
     await Future<void>.delayed(const Duration(milliseconds: 250));
@@ -759,8 +737,6 @@ Future<void> sendParteToServer(Parte parte) async {
 
   final client = http.Client();
   try {
-    // await _pingHealth(client, headers); // opcional
-
     final resp = await client
         .post(uri, headers: headers, body: jsonBody)
         .timeout(httpTimeout);
@@ -854,6 +830,7 @@ class _EnviarPdfPageState extends State<EnviarPdfPage> {
       return double.tryParse(t);
     }
 
+    if (!mounted) return;
     final ok = await showDialog<bool>(
       context: context,
       builder: (ctx) {
@@ -1142,7 +1119,7 @@ class _EnviarPdfPageState extends State<EnviarPdfPage> {
       }
     }
 
-    if (dialogCtx != null && dialogOpen) {
+    if (dialogCtx?.mounted == true && dialogOpen) {
       dialogOpen = false;
       Navigator.of(dialogCtx!).pop();
     }
@@ -1206,12 +1183,14 @@ class _EnviarPdfPageState extends State<EnviarPdfPage> {
                 if (snap.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
                 }
-                if (snap.hasError)
+                if (snap.hasError) {
                   return Center(child: Text('Error: ${snap.error}'));
+                }
 
                 final list = snap.data ?? [];
-                if (list.isEmpty)
+                if (list.isEmpty) {
                   return const Center(child: Text('No hay partes pendientes'));
+                }
 
                 return Column(
                   children: [
