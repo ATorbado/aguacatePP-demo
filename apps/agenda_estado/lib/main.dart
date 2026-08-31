@@ -757,6 +757,7 @@ class _FormPageState extends State<FormPage> {
   String? _lat, _lon, _pk;
   List<File> _photos = [];
   bool _sending = false;
+  bool _gettingCoordinates = false;
   late final Future<OfflineQueue> _queue;
   StreamSubscription<List<ConnectivityResult>>? _connectivitySubscription;
   Timer? _queueRetryTimer;
@@ -880,7 +881,10 @@ class _FormPageState extends State<FormPage> {
       initialTime: TimeOfDay.now(),
       builder: (ctx, child) {
         final isSenior = seniorMode.value;
-        return Theme(data: _buildTheme(isSenior), child: child!);
+        return MediaQuery(
+          data: MediaQuery.of(ctx).copyWith(alwaysUse24HourFormat: true),
+          child: Theme(data: _buildTheme(isSenior), child: child!),
+        );
       },
     );
     if (t != null) c.text = _isoTime(t);
@@ -976,23 +980,56 @@ class _FormPageState extends State<FormPage> {
   }
 
   /* --------- Coordenadas + PK --------- */
+  void _showCoordinateMessage(String message) {
+    if (!mounted) return;
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(SnackBar(content: Text(message)));
+  }
+
   Future<void> _coordsPk() async {
-    if (!await Geolocator.isLocationServiceEnabled()) return;
-    if (await Geolocator.requestPermission() == LocationPermission.denied) {
-      return;
-    }
-
-    final pos = await Geolocator.getCurrentPosition();
-    final lat = pos.latitude.toStringAsFixed(6);
-    final lon = pos.longitude.toStringAsFixed(6);
-    String? pk;
-
+    if (_gettingCoordinates) return;
+    setState(() {
+      _gettingCoordinates = true;
+      _pk = null;
+    });
     try {
+      if (!await Geolocator.isLocationServiceEnabled()) {
+        _showCoordinateMessage('Activa la ubicación del dispositivo.');
+        return;
+      }
+
+      var permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+      }
+      if (permission == LocationPermission.denied) {
+        _showCoordinateMessage('Agenda necesita permiso de ubicación.');
+        return;
+      }
+      if (permission == LocationPermission.deniedForever) {
+        _showCoordinateMessage(
+          'Activa el permiso de ubicación desde Ajustes de Android.',
+        );
+        return;
+      }
+
+      final pos = await Geolocator.getCurrentPosition(
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.high,
+          timeLimit: Duration(seconds: 12),
+        ),
+      );
+      final lat = pos.latitude.toStringAsFixed(6);
+      final lon = pos.longitude.toStringAsFixed(6);
+
       final uri = Uri.parse(
         'https://www.cartociudad.es/geocoder/api/geocoder/reverseGeocode'
         '?lon=$lon&lat=$lat&type=pk',
       );
       final r = await http.get(uri).timeout(const Duration(seconds: 6));
+
+      String? pk;
 
       if (r.statusCode == 200) {
         final body = jsonDecode(r.body);
@@ -1004,28 +1041,47 @@ class _FormPageState extends State<FormPage> {
                 ? v.first
                 : null;
 
+        final root = firstmap(body);
         final data =
-            firstmap(body) ??
-            firstmap(body['output']) ??
-            firstmap(body['address']);
+            firstmap(root?['output']) ?? firstmap(root?['address']) ?? root;
 
-        pk = data?['pk']?.toString() ?? data?['portalNumber']?.toString();
+        // Un número de portal no es un punto kilométrico. La demostración
+        // solo muestra el valor si el servicio lo identifica expresamente
+        // como PK.
+        pk = data?['pk']?.toString();
       } else {
         debugPrint('[PK] CartoCiudad ${r.statusCode}');
       }
+
+      if (!mounted) return;
+      setState(() {
+        _lat = lat;
+        _lon = lon;
+        _pk = pk;
+      });
+      if (pk == null || pk.trim().isEmpty) {
+        _showCoordinateMessage(
+          'Coordenadas obtenidas, pero no hay un PK cercano.',
+        );
+      }
     } on TimeoutException {
       debugPrint('[PK] Timeout');
+      _showCoordinateMessage(
+        'La ubicación o el servicio de PK tardó demasiado.',
+      );
     } on SocketException catch (e) {
       debugPrint('[PK] SocketException: $e');
+      _showCoordinateMessage('No se pudo conectar con el servicio de PK.');
+    } on PermissionDeniedException {
+      _showCoordinateMessage('Agenda no tiene permiso de ubicación.');
+    } on LocationServiceDisabledException {
+      _showCoordinateMessage('Activa la ubicación del dispositivo.');
     } catch (e) {
-      debugPrint('[PK] JSON error: $e');
+      debugPrint('[PK] Error: $e');
+      _showCoordinateMessage('No se pudo obtener el PK. Inténtalo de nuevo.');
+    } finally {
+      if (mounted) setState(() => _gettingCoordinates = false);
     }
-
-    setState(() {
-      _lat = lat;
-      _lon = lon;
-      _pk = pk;
-    });
   }
 
   /* --------- Foto --------- */
@@ -1672,10 +1728,36 @@ class _FormPageState extends State<FormPage> {
                                     const SizedBox(width: 8),
                                     Flexible(
                                       child: OutlinedButton(
-                                        onPressed: _coordsPk,
-                                        child: const FittedBox(
+                                        onPressed:
+                                            _gettingCoordinates
+                                                ? null
+                                                : _coordsPk,
+                                        style: OutlinedButton.styleFrom(
+                                          minimumSize: const Size(0, 48),
+                                        ),
+                                        child: FittedBox(
                                           fit: BoxFit.scaleDown,
-                                          child: Text('Obtener coordenadas'),
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              if (_gettingCoordinates)
+                                                const SizedBox.square(
+                                                  dimension: 18,
+                                                  child:
+                                                      CircularProgressIndicator(
+                                                        strokeWidth: 2,
+                                                      ),
+                                                )
+                                              else
+                                                const Icon(Icons.my_location),
+                                              const SizedBox(width: 8),
+                                              Text(
+                                                _gettingCoordinates
+                                                    ? 'Obteniendo…'
+                                                    : 'Obtener coordenadas',
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       ),
                                     ),

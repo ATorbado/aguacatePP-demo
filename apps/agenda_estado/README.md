@@ -39,8 +39,15 @@ flutter build apk --debug `
 Si el servidor no responde o devuelve un error reintentable, los campos y una
 copia estable de las fotos quedan en el almacenamiento privado de la app. La
 cola limita su tamaño, usa escritura con recuperación y conserva los datos si
-detecta corrupción. Los datos locales no están cifrados, por lo que el proyecto
-no debe considerarse publicable hasta decidir y validar el cifrado requerido.
+detecta corrupción. Los campos y las fotografías pendientes se cifran con una
+clave aleatoria guardada en el almacén seguro del dispositivo.
+
+## Punto kilométrico
+
+La demostración nunca interpreta un número de portal como PK. Una instalación
+real debe consultar los hitos oficiales desde un proxy HTTPS autenticado en su
+propio backend; así evita exponer infraestructura privada y mantiene un único
+cálculo verificable para todos los móviles.
 
 ## Política remota firmada
 
