@@ -2,23 +2,10 @@
 import 'package:flutter/material.dart';
 import 'package:animalesapp/silvestres_page.dart';
 
-import 'remote_security.dart';
-
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-
-  final securityResult = await RemoteSecurity.check();
-
-  runApp(MyApp(securityResult: securityResult));
-}
+void main() => runApp(const MyApp());
 
 class MyApp extends StatelessWidget {
-  final RemoteSecurityResult securityResult;
-
-  const MyApp({
-    super.key,
-    required this.securityResult,
-  });
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -39,9 +26,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: securityResult.isAllowed
-          ? const MainMenu()
-          : BlockedPage(message: securityResult.message),
+      home: const MainMenu(),
     );
   }
 }
@@ -49,10 +34,7 @@ class MyApp extends StatelessWidget {
 class BlockedPage extends StatelessWidget {
   final String message;
 
-  const BlockedPage({
-    super.key,
-    required this.message,
-  });
+  const BlockedPage({super.key, required this.message});
 
   @override
   Widget build(BuildContext context) {
@@ -125,7 +107,7 @@ class _MainMenuState extends State<MainMenu> {
   final List<String> nombres = [
     'Operario de ejemplo 1',
     'Operario de ejemplo 2',
-    'Añadir otro Operario'
+    'Añadir otro Operario',
   ];
 
   bool get _showOtros => _nombreComun == 'Añadir otro Operario';
@@ -155,9 +137,10 @@ class _MainMenuState extends State<MainMenu> {
               DropdownButtonFormField<String>(
                 value: _nombreComun,
                 hint: const Text('Operario'),
-                items: nombres
-                    .map((e) => DropdownMenuItem(value: e, child: Text(e)))
-                    .toList(),
+                items:
+                    nombres
+                        .map((e) => DropdownMenuItem(value: e, child: Text(e)))
+                        .toList(),
                 onChanged: (val) {
                   setState(() {
                     _nombreComun = val;
@@ -181,14 +164,19 @@ class _MainMenuState extends State<MainMenu> {
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () async {
-                  final nombre = (_nombreComun == 'Añadir otro Operario'
-                          ? _otrosController.text
-                          : _nombreComun ?? '')
-                      .trim();
+                  final nombre =
+                      (_nombreComun == 'Añadir otro Operario'
+                              ? _otrosController.text
+                              : _nombreComun ?? '')
+                          .trim();
 
                   if (nombre.trim().isEmpty) {
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Debes introducir el nombre de un Operario')),
+                      const SnackBar(
+                        content: Text(
+                          'Debes introducir el nombre de un Operario',
+                        ),
+                      ),
                     );
                     return;
                   }

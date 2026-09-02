@@ -59,7 +59,10 @@ class _SilvestresPageState extends State<SilvestresPage> {
                   children: [
                     const Text(
                       'Modo demostración',
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                     const SizedBox(height: 8),
                     Text('Operario: ${widget.operario}'),
@@ -91,17 +94,21 @@ class _SilvestresPageState extends State<SilvestresPage> {
             TextFormField(
               controller: _viaController,
               decoration: const InputDecoration(labelText: 'Vía ficticia'),
-              validator: (value) => value == null || value.trim().isEmpty
-                  ? 'Introduce una vía de ejemplo.'
-                  : null,
+              validator:
+                  (value) =>
+                      value == null || value.trim().isEmpty
+                          ? 'Introduce una vía de ejemplo.'
+                          : null,
             ),
             const SizedBox(height: 12),
             TextFormField(
               controller: _puntoController,
               decoration: const InputDecoration(labelText: 'Punto ficticio'),
-              validator: (value) => value == null || value.trim().isEmpty
-                  ? 'Introduce un punto de ejemplo.'
-                  : null,
+              validator:
+                  (value) =>
+                      value == null || value.trim().isEmpty
+                          ? 'Introduce un punto de ejemplo.'
+                          : null,
             ),
             const SizedBox(height: 12),
             TextFormField(
