@@ -30,6 +30,11 @@ class FormPage extends StatefulWidget {
 
 class _FormPageState extends State<FormPage> {
   static const _responsables = ['Responsable 1', 'Responsable 2'];
+  static final _recentDates = [
+    DateTime(2026, 3, 10),
+    DateTime(2026, 2, 24),
+    DateTime(2026, 2, 5),
+  ];
 
   final _formKey = GlobalKey<FormState>();
   final _lugarTrabajoController = TextEditingController();
@@ -83,12 +88,13 @@ class _FormPageState extends State<FormPage> {
     final ok = await Navigator.push<bool>(
       context,
       MaterialPageRoute(
-        builder: (_) => InspeccionSeguridadPage(
-          lugarTrabajo: _lugarTrabajoController.text.trim(),
-          nombreObra: _actividadController.text.trim(),
-          responsable: _responsableSeleccionado,
-          fechaInspeccion: _formatearFecha(fecha),
-        ),
+        builder:
+            (_) => InspeccionSeguridadPage(
+              lugarTrabajo: _lugarTrabajoController.text.trim(),
+              nombreObra: _actividadController.text.trim(),
+              responsable: _responsableSeleccionado,
+              fechaInspeccion: _formatearFecha(fecha),
+            ),
       ),
     );
 
@@ -101,6 +107,53 @@ class _FormPageState extends State<FormPage> {
         _fechaInspeccion = null;
       });
     }
+  }
+
+  Widget _buildRecentInspections(BuildContext context) {
+    final colors = Theme.of(context).colorScheme;
+    return Card(
+      color: colors.surface.withValues(alpha: 0.94),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Últimas inspecciones',
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+            ),
+            const SizedBox(height: 10),
+            ..._recentDates.map(
+              (date) => Padding(
+                padding: const EdgeInsets.only(bottom: 8),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.event_available_outlined,
+                      size: 20,
+                      color: colors.primary,
+                    ),
+                    const SizedBox(width: 10),
+                    Text(
+                      _formatearFechaVisible(date),
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                        fontFeatures: const [FontFeature.tabularFigures()],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            Text(
+              'Fechas de ejemplo; no se conecta a datos privados.',
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   @override
@@ -129,14 +182,18 @@ class _FormPageState extends State<FormPage> {
                   ),
                 ),
                 const SizedBox(height: 12),
+                _buildRecentInspections(context),
+                const SizedBox(height: 20),
                 TextFormField(
                   controller: _lugarTrabajoController,
                   decoration: const InputDecoration(
                     labelText: 'Lugar de trabajo',
                   ),
-                  validator: (value) => value == null || value.trim().isEmpty
-                      ? 'Obligatorio'
-                      : null,
+                  validator:
+                      (value) =>
+                          value == null || value.trim().isEmpty
+                              ? 'Obligatorio'
+                              : null,
                 ),
                 const SizedBox(height: 16),
                 TextFormField(
@@ -144,9 +201,11 @@ class _FormPageState extends State<FormPage> {
                   decoration: const InputDecoration(
                     labelText: 'Descripción de actividad',
                   ),
-                  validator: (value) => value == null || value.trim().isEmpty
-                      ? 'Obligatorio'
-                      : null,
+                  validator:
+                      (value) =>
+                          value == null || value.trim().isEmpty
+                              ? 'Obligatorio'
+                              : null,
                 ),
                 const SizedBox(height: 16),
                 DropdownButtonFormField<String>(
@@ -154,12 +213,15 @@ class _FormPageState extends State<FormPage> {
                   decoration: const InputDecoration(
                     labelText: 'Responsable de Inspección',
                   ),
-                  items: _responsables
-                      .map(
-                        (name) =>
-                            DropdownMenuItem(value: name, child: Text(name)),
-                      )
-                      .toList(),
+                  items:
+                      _responsables
+                          .map(
+                            (name) => DropdownMenuItem(
+                              value: name,
+                              child: Text(name),
+                            ),
+                          )
+                          .toList(),
                   onChanged: (value) {
                     if (value != null) {
                       setState(() => _responsableSeleccionado = value);

@@ -267,12 +267,13 @@ class _InspeccionSeguridadPageState extends State<InspeccionSeguridadPage> {
                             child: SizedBox(
                               height: 100,
                               width: double.infinity,
-                              child: resp.evidenciaNoConformidad != null
-                                  ? Image.file(
-                                      resp.evidenciaNoConformidad!,
-                                      fit: BoxFit.cover,
-                                    )
-                                  : const Icon(Icons.photo_library),
+                              child:
+                                  resp.evidenciaNoConformidad != null
+                                      ? Image.file(
+                                        resp.evidenciaNoConformidad!,
+                                        fit: BoxFit.cover,
+                                      )
+                                      : const Icon(Icons.photo_library),
                             ),
                           ),
                         ),
@@ -288,12 +289,13 @@ class _InspeccionSeguridadPageState extends State<InspeccionSeguridadPage> {
                             child: SizedBox(
                               height: 100,
                               width: double.infinity,
-                              child: resp.evidenciaCorreccion != null
-                                  ? Image.file(
-                                      resp.evidenciaCorreccion!,
-                                      fit: BoxFit.cover,
-                                    )
-                                  : const Icon(Icons.photo_library),
+                              child:
+                                  resp.evidenciaCorreccion != null
+                                      ? Image.file(
+                                        resp.evidenciaCorreccion!,
+                                        fit: BoxFit.cover,
+                                      )
+                                      : const Icon(Icons.photo_library),
                             ),
                           ),
                         ),
@@ -322,9 +324,10 @@ class _InspeccionSeguridadPageState extends State<InspeccionSeguridadPage> {
                     const Spacer(),
 
                     ElevatedButton(
-                      onPressed: resp.estado != null && okFotos && !_enviando
-                          ? _next
-                          : null,
+                      onPressed:
+                          resp.estado != null && okFotos && !_enviando
+                              ? _next
+                              : null,
                       child: Text(
                         _current < _preguntas.length - 1
                             ? 'Siguiente'
