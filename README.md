@@ -1,6 +1,6 @@
 # Aplicaciones Flutter — edición de demostración
 
-Este repositorio contiene versiones públicas y ejecutables de seis aplicaciones
+Este repositorio contiene versiones públicas y ejecutables de siete aplicaciones
 Flutter. Los datos operativos, credenciales, dominios privados, matrículas,
 personas, ubicaciones y elementos de marca se han sustituido por ejemplos
 sintéticos.
@@ -9,6 +9,7 @@ sintéticos.
 
 - `agenda_estado`
 - `animalesapp`
+- `inspecciones`
 - `maquinaria_m`
 - `mi_diario`
 - `nieve_vial`
