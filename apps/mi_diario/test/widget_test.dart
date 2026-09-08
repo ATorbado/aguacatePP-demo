@@ -1,18 +1,14 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mi_diario/main.dart';
-import 'package:mi_diario/remote_security.dart';
 
 void main() {
-  testWidgets('muestra el bloqueo de seguridad', (tester) async {
-    const message = 'Acceso bloqueado para la prueba';
+  testWidgets('muestra un error local sin depender de autorización', (
+    tester,
+  ) async {
+    const message = 'No se pudo abrir el diario de prueba';
 
     await tester.pumpWidget(
-      const MiDiarioApp(
-        securityResult: RemoteSecurityResult(
-          status: RemoteSecurityStatus.error,
-          message: message,
-        ),
-      ),
+      const MiDiarioApp(startupError: message),
     );
 
     expect(find.text(message), findsOneWidget);

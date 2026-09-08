@@ -9,8 +9,6 @@ plugins {
 
 val keystorePropsFile = rootProject.file("key.properties")
 val hasKeystore = keystorePropsFile.exists()
-val useInstalledAppSigningKey =
-    providers.gradleProperty("useInstalledAppSigningKey").orNull == "true"
 val keystoreProps = Properties().apply {
     if (hasKeystore) load(FileInputStream(keystorePropsFile))
 }
@@ -47,10 +45,7 @@ android {
     }
     buildTypes {
         getByName("release") {
-            if (useInstalledAppSigningKey) {
-                // La autorización general exige la misma firma que las demás apps.
-                signingConfig = signingConfigs.getByName("debug")
-            } else if (hasKeystore) {
+            if (hasKeystore) {
                 signingConfig = signingConfigs.getByName("release")
             } else {
                 println("ADVERTENCIA: falta key.properties; se usará la firma de desarrollo.")

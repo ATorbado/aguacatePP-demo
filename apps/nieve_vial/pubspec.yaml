@@ -22,9 +22,6 @@ dependencies:
 
   encrypt: ^5.0.1
   pointycastle: ^3.7.3
-  shared_preferences: ^2.5.3
-  package_info_plus: ^9.0.0
-  cryptography: ^2.7.0 #politicGUARD
 
   sqflite: ^2.3.3+1
   path: ^1.9.0

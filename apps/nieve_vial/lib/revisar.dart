@@ -229,22 +229,32 @@ class LocalDb {
           await db.execute('ALTER TABLE partes ADD COLUMN fecha_iso TEXT');
         }
         if (!await hasCol('partes', 'fecha_inicio_parte')) {
-          await db.execute('ALTER TABLE partes ADD COLUMN fecha_inicio_parte TEXT');
+          await db.execute(
+            'ALTER TABLE partes ADD COLUMN fecha_inicio_parte TEXT',
+          );
         }
         if (!await hasCol('partes', 'hora_inicio_parte')) {
-          await db.execute('ALTER TABLE partes ADD COLUMN hora_inicio_parte TEXT');
+          await db.execute(
+            'ALTER TABLE partes ADD COLUMN hora_inicio_parte TEXT',
+          );
         }
         if (!await hasCol('partes', 'fecha_fin_parte')) {
-          await db.execute('ALTER TABLE partes ADD COLUMN fecha_fin_parte TEXT');
+          await db.execute(
+            'ALTER TABLE partes ADD COLUMN fecha_fin_parte TEXT',
+          );
         }
         if (!await hasCol('partes', 'hora_fin_parte')) {
           await db.execute('ALTER TABLE partes ADD COLUMN hora_fin_parte TEXT');
         }
         if (!await hasCol('partes', 'horas_trabajador')) {
-          await db.execute('ALTER TABLE partes ADD COLUMN horas_trabajador TEXT');
+          await db.execute(
+            'ALTER TABLE partes ADD COLUMN horas_trabajador TEXT',
+          );
         }
         if (!await hasCol('partes', 'horas_extra_trabajador')) {
-          await db.execute('ALTER TABLE partes ADD COLUMN horas_extra_trabajador TEXT');
+          await db.execute(
+            'ALTER TABLE partes ADD COLUMN horas_extra_trabajador TEXT',
+          );
         }
         if (!await hasCol('partes', 'observaciones')) {
           await db.execute('ALTER TABLE partes ADD COLUMN observaciones TEXT');
@@ -259,7 +269,9 @@ class LocalDb {
         }
 
         if (!await hasCol('tramos', 'material_solido')) {
-          await db.execute('ALTER TABLE tramos ADD COLUMN material_solido TEXT');
+          await db.execute(
+            'ALTER TABLE tramos ADD COLUMN material_solido TEXT',
+          );
         }
         if (!await hasCol('tramos', 'silo_id')) {
           await db.execute('ALTER TABLE tramos ADD COLUMN silo_id INTEGER');
@@ -268,7 +280,9 @@ class LocalDb {
           await db.execute('ALTER TABLE tramos ADD COLUMN consumo_sal_t REAL');
         }
         if (!await hasCol('tramos', 'consumo_salmuera_l')) {
-          await db.execute('ALTER TABLE tramos ADD COLUMN consumo_salmuera_l REAL');
+          await db.execute(
+            'ALTER TABLE tramos ADD COLUMN consumo_salmuera_l REAL',
+          );
         }
         if (!await hasCol('tramos', 'clca_kg')) {
           await db.execute('ALTER TABLE tramos ADD COLUMN clca_kg REAL');
@@ -447,24 +461,24 @@ class LocalPartesRepo {
   Parte _parteFromRow(Map<String, Object?> r) {
     DateTime parseDt(String? s) =>
         DateTime.tryParse(s ?? '')?.toLocal() ?? DateTime.now();
-    int? _i(Object? v) =>
+    int? parseInt(Object? v) =>
         v == null ? null : (v is int ? v : int.tryParse('$v'));
-    double? _d(Object? v) =>
+    double? parseDouble(Object? v) =>
         v == null ? null : (v is num ? v.toDouble() : double.tryParse('$v'));
 
     return Parte(
-      id: _i(r['id']) ?? 0,
+      id: parseInt(r['id']) ?? 0,
       createdAt: parseDt(r['created_at']?.toString()),
       status: r['status']?.toString(),
       fechaIso: r['fecha_iso']?.toString() ?? '1970-01-01',
       operario: r['operario']?.toString(),
-      matriculaId: _i(r['matricula_id']),
-      kmInicio: _i(r['km_inicio']),
-      kmFin: _i(r['km_fin']),
-      horasInicio: _i(r['horas_inicio']),
-      horasFin: _i(r['horas_fin']),
-      gasolinaL: _d(r['gasolina_l']),
-      adblueL: _d(r['adblue_l']),
+      matriculaId: parseInt(r['matricula_id']),
+      kmInicio: parseInt(r['km_inicio']),
+      kmFin: parseInt(r['km_fin']),
+      horasInicio: parseInt(r['horas_inicio']),
+      horasFin: parseInt(r['horas_fin']),
+      gasolinaL: parseDouble(r['gasolina_l']),
+      adblueL: parseDouble(r['adblue_l']),
       fechaInicioParte: r['fecha_inicio_parte']?.toString(),
       horaInicioParte: r['hora_inicio_parte']?.toString(),
       fechaFinParte: r['fecha_fin_parte']?.toString(),
@@ -476,36 +490,36 @@ class LocalPartesRepo {
   }
 
   Tramo _tramoFromRow(Map<String, Object?> r) {
-    int? _i(Object? v) =>
+    int? parseInt(Object? v) =>
         v == null ? null : (v is int ? v : int.tryParse('$v'));
-    double? _d(Object? v) =>
+    double? parseDouble(Object? v) =>
         v == null ? null : (v is num ? v.toDouble() : double.tryParse('$v'));
 
     return Tramo(
-      id: _i(r['id']) ?? 0,
-      parteId: _i(r['parte_id']) ?? 0,
-      numero: _i(r['numero']),
+      id: parseInt(r['id']) ?? 0,
+      parteId: parseInt(r['parte_id']) ?? 0,
+      numero: parseInt(r['numero']),
       actividad: r['actividad']?.toString(),
       ctra: r['ctra']?.toString(),
-      pkIni: _i(r['pk_ini']),
-      mIni: _i(r['m_ini']),
-      pkFin: _i(r['pk_fin']),
-      mFin: _i(r['m_fin']),
+      pkIni: parseInt(r['pk_ini']),
+      mIni: parseInt(r['m_ini']),
+      pkFin: parseInt(r['pk_fin']),
+      mFin: parseInt(r['m_fin']),
       hora: r['hora']?.toString(),
       horaFin: r['hora_fin']?.toString(),
       material: r['material']?.toString(),
-      consumo: _d(r['consumo']),
-      clca: _d(r['clca']),
+      consumo: parseDouble(r['consumo']),
+      clca: parseDouble(r['clca']),
       materialSolido: r['material_solido']?.toString(),
-      siloId: _i(r['silo_id']),
-      consumoSalT: _d(r['consumo_sal_t']),
-      consumoSalmueraL: _d(r['consumo_salmuera_l']),
-      clcaKg: _d(r['clca_kg']),
+      siloId: parseInt(r['silo_id']),
+      consumoSalT: parseDouble(r['consumo_sal_t']),
+      consumoSalmueraL: parseDouble(r['consumo_salmuera_l']),
+      clcaKg: parseDouble(r['clca_kg']),
       cuchillaModo: r['cuchilla_modo']?.toString(),
       cuchilla: r['cuchilla']?.toString(),
-      horasNormal: _d(r['horas_normal']),
-      horasExtra: _d(r['horas_extra']),
-      orden: _i(r['orden']),
+      horasNormal: parseDouble(r['horas_normal']),
+      horasExtra: parseDouble(r['horas_extra']),
+      orden: parseInt(r['orden']),
     );
   }
 
@@ -1004,8 +1018,9 @@ class _RevisarDetailPageState extends State<RevisarDetailPage> {
       Navigator.of(context).pop(true);
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Error al guardar: $e')));
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error al guardar: $e')));
     } finally {
       if (mounted) setState(() => _saving = false);
     }
@@ -1041,13 +1056,15 @@ class _RevisarDetailPageState extends State<RevisarDetailPage> {
     try {
       await widget.repo.deleteParte(p.id);
       if (!mounted) return;
-      ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text('Parte borrado')));
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Parte borrado')));
       Navigator.of(context).pop(true);
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Error: $e')));
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error: $e')));
     } finally {
       if (mounted) setState(() => _saving = false);
     }
@@ -1068,25 +1085,25 @@ class _RevisarDetailPageState extends State<RevisarDetailPage> {
       bottomNavigationBar: p == null
           ? null
           : Padding(
-        padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-        child: Row(
-          children: [
-            Expanded(
-              child: OutlinedButton(
-                onPressed: _saving ? null : _borrar,
-                child: const Text('Borrar parte'),
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: _saving ? null : _borrar,
+                      child: const Text('Borrar parte'),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: FilledButton(
+                      onPressed: _saving ? null : _guardarTramos,
+                      child: Text(_saving ? 'Guardando...' : 'Guardar'),
+                    ),
+                  ),
+                ],
               ),
             ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: FilledButton(
-                onPressed: _saving ? null : _guardarTramos,
-                child: Text(_saving ? 'Guardando...' : 'Guardar'),
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 
@@ -1120,12 +1137,18 @@ class _RevisarDetailPageState extends State<RevisarDetailPage> {
           Text('Operario: ${p.operario ?? '-'}'),
           Text('Matrícula: ${matriculaFromId(p.matriculaId)}'),
           Text('KM: ${p.kmInicio ?? '-'} → ${p.kmFin ?? '-'}'),
-          Text('Horas contador (min): ${p.horasInicio ?? '-'} → ${p.horasFin ?? '-'}'),
+          Text(
+            'Horas contador (min): ${p.horasInicio ?? '-'} → ${p.horasFin ?? '-'}',
+          ),
           const SizedBox(height: 16),
 
-          Text('Tramos agrupados', style: Theme.of(context).textTheme.titleMedium),
+          Text(
+            'Tramos agrupados',
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
           const SizedBox(height: 8),
-          if (agrupados.isEmpty) const Text('Sin tramos DEMO-01/DEMO-02 para agrupar.'),
+          if (agrupados.isEmpty)
+            const Text('Sin tramos DEMO-01/DEMO-02 para agrupar.'),
           if (agrupados.isNotEmpty)
             ListView.separated(
               shrinkWrap: true,
@@ -1134,26 +1157,35 @@ class _RevisarDetailPageState extends State<RevisarDetailPage> {
               separatorBuilder: (_, __) => const Divider(height: 1),
               itemBuilder: (context, index) {
                 final t = agrupados[index];
-                final pkIniStr = t.pkIni == null ? '-' : '${t.pkIni},${t.mIni ?? 0}';
-                final pkFinStr = t.pkFin == null ? '-' : '${t.pkFin},${t.mFin ?? 0}';
+                final pkIniStr = t.pkIni == null
+                    ? '-'
+                    : '${t.pkIni},${t.mIni ?? 0}';
+                final pkFinStr = t.pkFin == null
+                    ? '-'
+                    : '${t.pkFin},${t.mFin ?? 0}';
                 final horasStr = '${t.horaIni ?? '-'} → ${t.horaFin ?? '-'}';
 
                 return ListTile(
-                  title: Text('${t.actividad ?? '-'} - tramo ${t.tramo ?? '-'} - ${t.ctra ?? ''}'),
+                  title: Text(
+                    '${t.actividad ?? '-'} - tramo ${t.tramo ?? '-'} - ${t.ctra ?? ''}',
+                  ),
                   subtitle: Text(
                     'PK $pkIniStr → $pkFinStr\n'
-                        'Horas tramo: $horasStr\n'
-                        'Sal sólida: ${t.totalSalT.toStringAsFixed(2)} t\n'
-                        'Salmuera: ${t.totalSalmueraL.toStringAsFixed(0)} L\n'
-                        'CLCA: ${t.totalClcaKg.toStringAsFixed(0)} kg\n'
-                        'Tramos originales: ${t.origen.length}',
+                    'Horas tramo: $horasStr\n'
+                    'Sal sólida: ${t.totalSalT.toStringAsFixed(2)} t\n'
+                    'Salmuera: ${t.totalSalmueraL.toStringAsFixed(0)} L\n'
+                    'CLCA: ${t.totalClcaKg.toStringAsFixed(0)} kg\n'
+                    'Tramos originales: ${t.origen.length}',
                   ),
                 );
               },
             ),
 
           const SizedBox(height: 24),
-          Text('Tramos editables', style: Theme.of(context).textTheme.titleMedium),
+          Text(
+            'Tramos editables',
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
           const SizedBox(height: 8),
           ListView.builder(
             shrinkWrap: true,
@@ -1222,8 +1254,9 @@ class _TramoEditCardState extends State<_TramoEditCard> {
     _horaFinCtrl = TextEditingController(text: t.horaFin ?? '');
 
     _salTCtrl = TextEditingController(text: t.consumoSalT?.toString() ?? '');
-    _salmueraCtrl =
-        TextEditingController(text: t.consumoSalmueraL?.toString() ?? '');
+    _salmueraCtrl = TextEditingController(
+      text: t.consumoSalmueraL?.toString() ?? '',
+    );
     _clcaCtrl = TextEditingController(text: t.clcaKg?.toString() ?? '');
 
     _actCtrl.addListener(() => t.actividad = _actCtrl.text.trim());
@@ -1271,7 +1304,8 @@ class _TramoEditCardState extends State<_TramoEditCard> {
 
     _salTCtrl.addListener(() => t.consumoSalT = _parseDouble(_salTCtrl.text));
     _salmueraCtrl.addListener(
-            () => t.consumoSalmueraL = _parseDouble(_salmueraCtrl.text));
+      () => t.consumoSalmueraL = _parseDouble(_salmueraCtrl.text),
+    );
     _clcaCtrl.addListener(() => t.clcaKg = _parseDouble(_clcaCtrl.text));
 
     _revalHoras();
@@ -1539,22 +1573,30 @@ class _TramoEditCardState extends State<_TramoEditCard> {
                 Expanded(
                   child: TextField(
                     controller: _salTCtrl,
-                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                    keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
                     inputFormatters: [
                       FilteringTextInputFormatter.allow(RegExp(r'[0-9.,]')),
                     ],
-                    decoration: const InputDecoration(labelText: 'Sal sólida (t)'),
+                    decoration: const InputDecoration(
+                      labelText: 'Sal sólida (t)',
+                    ),
                   ),
                 ),
                 const SizedBox(width: 8),
                 Expanded(
                   child: TextField(
                     controller: _salmueraCtrl,
-                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                    keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
                     inputFormatters: [
                       FilteringTextInputFormatter.allow(RegExp(r'[0-9.,]')),
                     ],
-                    decoration: const InputDecoration(labelText: 'Salmuera (L)'),
+                    decoration: const InputDecoration(
+                      labelText: 'Salmuera (L)',
+                    ),
                   ),
                 ),
               ],
@@ -1563,7 +1605,9 @@ class _TramoEditCardState extends State<_TramoEditCard> {
             const SizedBox(height: 8),
             TextField(
               controller: _clcaCtrl,
-              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+              keyboardType: const TextInputType.numberWithOptions(
+                decimal: true,
+              ),
               inputFormatters: [
                 FilteringTextInputFormatter.allow(RegExp(r'[0-9.,]')),
               ],

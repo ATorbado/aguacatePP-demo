@@ -3,7 +3,6 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:workmanager/workmanager.dart';
 
 import 'pages/home_page.dart';
-import 'remote_security.dart';
 import 'services/auth_service.dart';
 import 'services/backup_service.dart';
 import 'services/database_service.dart';
@@ -15,9 +14,8 @@ void main() async {
 
   await initializeDateFormatting('es_ES');
 
-  final securityResult = await RemoteSecurity.check();
-
-  if (securityResult.isAllowed) {
+  String? startupError;
+  try {
     await DatabaseService.instance.init();
     await NotificationService.instance.init();
     await NotificationService.instance.scheduleDailyReminders();
@@ -27,17 +25,20 @@ void main() async {
     await Workmanager().initialize(weeklyBackupCallbackDispatcher);
 
     await WeeklyBackupWorker.scheduleWeeklyBackup();
+  } catch (_) {
+    startupError =
+        'No se pudo abrir el diario de forma segura. Los datos no se han borrado.';
   }
 
-  runApp(MiDiarioApp(securityResult: securityResult));
+  runApp(MiDiarioApp(startupError: startupError));
 }
 
 class MiDiarioApp extends StatelessWidget {
-  final RemoteSecurityResult securityResult;
+  final String? startupError;
 
   const MiDiarioApp({
     super.key,
-    required this.securityResult,
+    this.startupError,
   });
 
   @override
@@ -75,9 +76,9 @@ class MiDiarioApp extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      home: securityResult.isAllowed
+      home: startupError == null
           ? const LockGate()
-          : BlockedPage(message: securityResult.message),
+          : BlockedPage(message: startupError!),
     );
   }
 }

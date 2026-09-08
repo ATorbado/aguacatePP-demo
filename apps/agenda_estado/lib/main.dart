@@ -12,7 +12,6 @@ import 'package:flutter/services.dart';
 
 import 'app_config.dart';
 import 'offline_queue.dart';
-import 'remote_security.dart';
 import 'retry_backoff.dart';
 
 /* ------------------------- Accesibilidad ------------------------- */
@@ -612,17 +611,15 @@ int? _computeVlimite({
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  final securityResult = await RemoteSecurity.check();
   final appConfig = AppConfig.fromEnvironment();
 
-  runApp(MyApp(securityResult: securityResult, config: appConfig));
+  runApp(MyApp(config: appConfig));
 }
 
 class MyApp extends StatelessWidget {
-  final RemoteSecurityResult securityResult;
   final AppConfig config;
 
-  const MyApp({super.key, required this.securityResult, required this.config});
+  const MyApp({super.key, required this.config});
 
   @override
   Widget build(BuildContext _) {
@@ -634,9 +631,7 @@ class MyApp extends StatelessWidget {
             theme: _buildTheme(isSenior),
             debugShowCheckedModeBanner: false,
             home:
-                !securityResult.isAllowed
-                    ? BlockedPage(message: securityResult.message)
-                    : !config.isValid
+                !config.isValid
                     ? BlockedPage(
                       title: 'Configuración pendiente',
                       message: config.validationError!,

@@ -10,8 +10,6 @@ plugins {
 
 val keystorePropsFile = rootProject.file("key.properties")
 val hasKeystore = keystorePropsFile.exists()
-val useInstalledAppSigningKey =
-    providers.gradleProperty("useInstalledAppSigningKey").orNull == "true"
 val keystoreProps = Properties().apply {
     if (hasKeystore) load(FileInputStream(keystorePropsFile))
 }
@@ -53,10 +51,7 @@ android {
 
     buildTypes {
         getByName("release") {
-            if (useInstalledAppSigningKey) {
-                // Migración in situ: conserva la firma de la app ya instalada.
-                signingConfig = signingConfigs.getByName("debug")
-            } else if (hasKeystore) {
+            if (hasKeystore) {
                 signingConfig = signingConfigs.getByName("release")
             } else {
                 println("ADVERTENCIA: falta key.properties; el APK quedará sin firmar.")

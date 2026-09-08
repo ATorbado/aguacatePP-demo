@@ -5,17 +5,11 @@ import 'package:http/http.dart' as http;
 
 import 'recpart.dart';
 import 'modifc.dart';
-import 'remote_security.dart';
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-
-  final securityResult = await RemoteSecurity.check();
-
+void main() {
   runApp(
     App2ConfirmacionNieve(
       api: ApiClient(baseUrl: baseUrl, apiToken: apiToken),
-      securityResult: securityResult,
     ),
   );
 }
@@ -829,13 +823,8 @@ DateTimeRange calcRangoTurno(DateTime now) {
 
 class App2ConfirmacionNieve extends StatelessWidget {
   final ApiClient api;
-  final RemoteSecurityResult securityResult;
 
-  const App2ConfirmacionNieve({
-    super.key,
-    required this.api,
-    required this.securityResult,
-  });
+  const App2ConfirmacionNieve({super.key, required this.api});
 
   @override
   Widget build(BuildContext context) {
@@ -843,9 +832,7 @@ class App2ConfirmacionNieve extends StatelessWidget {
       title: 'App2 Nieve Supervisor',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(useMaterial3: true, colorSchemeSeed: Colors.blueGrey),
-      home: securityResult.isAllowed
-          ? MainMenuPage(api: api)
-          : GateBlockPage(msg: securityResult.message),
+      home: MainMenuPage(api: api),
     );
   }
 }
@@ -937,49 +924,6 @@ class _BigMenuButton extends StatelessWidget {
               style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class GateBlockPage extends StatelessWidget {
-  final String msg;
-
-  const GateBlockPage({super.key, required this.msg});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Icon(Icons.lock, size: 72),
-              const SizedBox(height: 16),
-              Text(msg, textAlign: TextAlign.center),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: () async {
-                  final securityResult = await RemoteSecurity.check();
-
-                  if (!context.mounted) return;
-
-                  Navigator.of(context).pushReplacement(
-                    MaterialPageRoute(
-                      builder: (_) => App2ConfirmacionNieve(
-                        api: ApiClient(baseUrl: baseUrl, apiToken: apiToken),
-                        securityResult: securityResult,
-                      ),
-                    ),
-                  );
-                },
-                child: const Text('Reintentar'),
-              ),
-            ],
-          ),
         ),
       ),
     );

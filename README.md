@@ -21,6 +21,11 @@ sintéticos.
 no contactan con la infraestructura privada: usan datos locales de ejemplo y
 simulan las operaciones que normalmente se enviarían a un servidor.
 
+Las ediciones públicas no incluyen Aguacate Auth, alta de dispositivos,
+validación remota ni permisos de acceso al autenticador interno. Se pueden abrir
+directamente y deben firmarse con una clave propia del distribuidor, separada de
+las aplicaciones internas.
+
 Para ejecutar una aplicación:
 
 ```powershell
