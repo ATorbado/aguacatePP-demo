@@ -1,5 +1,6 @@
 import 'dart:convert';
-import 'package:http/http.dart' as http;
+import 'dart:async';
+import 'bounded_request.dart';
 
 import '../models/vehicle.dart';
 import '../models/maintenance_type.dart';
@@ -59,7 +60,7 @@ class MaquinariaApi {
     }
     _requireConfiguration();
     try {
-      final res = await http.get(Uri.parse('$baseUrl/vehicles'));
+      final res = await boundedRequest('GET', Uri.parse('$baseUrl/vehicles'));
 
       if (res.statusCode != 200) {
         throw AppException(_safeError('cargar los vehículos'));
@@ -91,7 +92,7 @@ class MaquinariaApi {
     }
     _requireConfiguration();
     try {
-      final res = await http.get(Uri.parse('$baseUrl/types'));
+      final res = await boundedRequest('GET', Uri.parse('$baseUrl/types'));
 
       if (res.statusCode != 200) {
         throw AppException(_safeError('cargar los tipos de mantenimiento'));
@@ -113,7 +114,7 @@ class MaquinariaApi {
     }
     _requireConfiguration();
     try {
-      final res = await http.get(Uri.parse('$baseUrl/positions'));
+      final res = await boundedRequest('GET', Uri.parse('$baseUrl/positions'));
 
       if (res.statusCode != 200) {
         throw AppException(_safeError('cargar las posiciones'));
@@ -134,7 +135,10 @@ class MaquinariaApi {
     }
     _requireConfiguration();
     try {
-      final res = await http.get(Uri.parse('$baseUrl/vehicles/$vehicleId/logs'));
+      final res = await boundedRequest(
+        'GET',
+        Uri.parse('$baseUrl/vehicles/$vehicleId/logs'),
+      );
 
       if (res.statusCode != 200) {
         throw AppException(_safeError('cargar el historial'));
@@ -171,7 +175,7 @@ class MaquinariaApi {
         },
       );
 
-      final res = await http.get(uri);
+      final res = await boundedRequest('GET', uri);
 
       if (res.statusCode != 200) {
         throw AppException(_safeError('cargar el último mantenimiento'));
@@ -200,8 +204,9 @@ class MaquinariaApi {
         MaintenanceLog(
           id: logs.length + 1,
           fecha: fechaIso,
-          tipoMantenimiento:
-              maintenanceTypeId == null ? null : 'Mantenimiento de ejemplo',
+          tipoMantenimiento: maintenanceTypeId == null
+              ? null
+              : 'Mantenimiento de ejemplo',
           tituloLibre: tituloLibre,
           posicion: positionId == null ? null : 'Posición $positionId',
           kilometros: kilometros,
@@ -226,15 +231,21 @@ class MaquinariaApi {
           'marca_modelo': marcaModelo.trim(),
       };
 
-      final res = await http.post(
+      final res = await boundedRequest(
+        'POST',
         Uri.parse('$baseUrl/vehicles/$vehicleId/logs'),
-        headers: {'Content-Type': 'application/json'},
+        headers: Future.value({'Content-Type': 'application/json'}),
         body: jsonEncode(body),
       );
 
       if (res.statusCode != 201) {
         throw AppException(_safeError('guardar el mantenimiento'));
       }
+    } on TimeoutException {
+      throw AppException(
+        'No se pudo confirmar el guardado en 20 segundos. '
+        'Revisa el historial antes de volver a enviarlo.',
+      );
     } catch (_) {
       throw AppException(_safeError('guardar el mantenimiento'));
     }
