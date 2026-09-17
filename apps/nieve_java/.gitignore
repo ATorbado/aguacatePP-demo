@@ -1,0 +1,6 @@
+target/
+.codex/
+.idea/
+*.iml
+*.log
+*.properties.local

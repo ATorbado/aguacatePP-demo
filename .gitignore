@@ -1,4 +1,6 @@
 # Flutter y herramientas
+.codex/
+**/.codex/
 **/.dart_tool/
 **/build/
 **/.gradle/
